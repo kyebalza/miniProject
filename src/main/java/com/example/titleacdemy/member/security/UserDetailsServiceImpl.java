@@ -14,10 +14,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final MemberRepository memberRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String nickname) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         // 이메일 존재여부 확인
-        Member member = memberRepository.findByNickname(nickname).orElseThrow(
+        Member member = memberRepository.findByEmail(email).orElseThrow(
                 () -> new RuntimeException("Not Found Account")
         );
 

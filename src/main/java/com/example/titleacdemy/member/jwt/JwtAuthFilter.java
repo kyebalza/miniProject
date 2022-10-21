@@ -31,21 +31,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 jwtExceptionHandler(response, "AccessToken Expired", HttpStatus.BAD_REQUEST);
                 return;
             }
-            setAuthentication(jwtUtil.getNicknameFromToken(accessToken));
+            setAuthentication(jwtUtil.getEmailFromToken(accessToken));
         }else if(refreshToken != null) {
             if(!jwtUtil.refreshTokenValidation(refreshToken)){
                 jwtExceptionHandler(response, "RefreshToken Expired", HttpStatus.BAD_REQUEST);
                 return;
             }
-            setAuthentication(jwtUtil.getNicknameFromToken(refreshToken));
+            setAuthentication(jwtUtil.getEmailFromToken(refreshToken));
         }
 
         // 다음 필터로 수행되게 해준다
         filterChain.doFilter(request,response);
     }
 
-    public void setAuthentication(String nickname) {
-        Authentication authentication = jwtUtil.createAuthentication(nickname);
+    public void setAuthentication(String email) {
+        Authentication authentication = jwtUtil.createAuthentication(email);
         // context에 담아두면 UsernamePasswordAuthenticationFilter에서 인증된걸 알게 해준다
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
