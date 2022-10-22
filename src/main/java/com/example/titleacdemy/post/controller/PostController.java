@@ -6,6 +6,7 @@ import com.example.titleacdemy.post.dto.PostRequestDto;
 import com.example.titleacdemy.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,5 +27,10 @@ public class PostController {
                                       @RequestPart(value = "post" ) @Valid PostRequestDto postRequestDto,
                                       @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return postService.createPost(multipartFile, postRequestDto, userDetails.getMember());
+    }
+
+    @GetMapping("/api/post")
+    public ResponseDto<?> getPostAll(){
+        return postService.getPostAll();
     }
 }

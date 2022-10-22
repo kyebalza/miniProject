@@ -39,6 +39,7 @@ public class PostService {
         String imgurl = null;
 
         Post post = null;
+
         for (MultipartFile file : multipartFile) {
             if (!file.isEmpty()) {
                 String fileName = CommonUtils.buildFileName(file.getOriginalFilename());
@@ -54,6 +55,7 @@ public class PostService {
                 imgurl = amazonS3Client.getUrl(bucketName, fileName).toString();
 
                 post = Post.builder()
+                        .member(member)
                         .title(postRequestDto.getTitle())
                         .content(postRequestDto.getContent())
                         .imgUrl(imgurl)
@@ -63,5 +65,11 @@ public class PostService {
             }
         }
         return ResponseDto.success(new PostResponseDto(post));
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseDto<?> getPostAll(){
+        List<Post> postList = postRepository.findAllByOrderByModifiedAtDesc();
+        return null;
     }
 }
