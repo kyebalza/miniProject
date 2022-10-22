@@ -22,9 +22,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         );
 
         // 찾은 이메일을 userDetails에 객체로 저장
-        UserDetailsImpl memberDetails = new UserDetailsImpl();
-        memberDetails.setUser(member);
+        UserDetailsImpl userDetails = new UserDetailsImpl();
+        userDetails.setMember(member);
 
-        return memberDetails;
+        return userDetails;
     }
 }

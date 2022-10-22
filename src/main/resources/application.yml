@@ -1,3 +1,15 @@
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: myspartabucket11
+    credentials:
+      access-key: AKIA3WLTVYEZMKBZSKW3
+      secret-key: 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
+    stack:
+      auto: false
+
 server:
   port: 8080
 
@@ -29,3 +41,5 @@ logging:
 
 jwt:
   secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK
+
+
