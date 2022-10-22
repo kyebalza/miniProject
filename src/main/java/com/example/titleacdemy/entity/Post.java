@@ -35,6 +35,9 @@ public class Post extends Timestamped{
 //    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Comment> comments;
 
+    public Post(Long id) {
+        this.id = id;
+    }
     public Post(Member member, String title, String content){
         this.member = member;
         this.title = title;
