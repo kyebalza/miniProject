@@ -32,5 +32,4 @@ public class PostController {
     @GetMapping("/api/post")
     public ResponseDto<?> getPostAll(){
         return postService.getPostAll();
-    }
-}
+    }}
