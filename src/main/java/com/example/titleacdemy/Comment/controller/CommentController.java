@@ -17,7 +17,9 @@ import java.util.List;
 public class CommentController {
     private final CommentService commentService;
     @PostMapping
-    public ResponseDto<?> create(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,@PathVariable("post_id") Long postId, @RequestBody CommentReqDto dto) {
+    public ResponseDto<?> create(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+                                 @PathVariable("post_id") Long postId,
+                                 @RequestBody CommentReqDto dto) {
             commentService.create(userDetailsImpl.getMember().getId(),postId, dto);
         return new ResponseDto<>(true, null, null);
     }
