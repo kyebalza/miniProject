@@ -18,8 +18,8 @@ public class LikesController {
     private final LikesService likesService;
 
     @PostMapping("/post/{postId}/like")
-    public ResponseDto<?> likeUp(@PathVariable Long id,
+    public ResponseDto<?> likeUp(@PathVariable Long postId,
                                  @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
-        return likesService.likeUp(id, userDetailsImpl.getMember().getId());
+        return likesService.likeUp(postId, userDetailsImpl.getMember().getId());
     }
 }
