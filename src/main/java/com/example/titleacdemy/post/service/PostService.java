@@ -111,7 +111,7 @@ public class PostService {
         return ResponseDto.success(postResponseDto);
     }
 
-    //게시글 삭제 //npe발생...
+    //게시글 삭제
     @Transactional
     public ResponseDto<?> deletePost(Long postId, Member member) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 글이 존재하지 않습니다."));
@@ -136,7 +136,9 @@ public class PostService {
         return ResponseDto.success(new PostResponseDto(post));
 
     }
-    //member에서 email받아오기
+
+}
+//member에서 email받아오기
 //    public Member checkMember(Member member){
 //        Optional<Member> mem = memberRepository.findByEmail(member.getEmail());
 //        if(!mem.isPresent())
@@ -144,10 +146,8 @@ public class PostService {
 //        return mem.get();
 //    }
 
-    //        if(!member.equals(post.getMember())){
+//        if(!member.equals(post.getMember())){
 //        }
 //        if(!post.getImgUrl().equals("")){
 //            amazonS3Client.deleteObject(bucket, post.getImgUrl());
 //        }
-
-}
