@@ -51,6 +51,7 @@ public class PostController {
                                     @RequestBody PostRequestDto postRequestDto){
         return postService.updatePost(postId, userDetails.getMember(), postRequestDto);
     }
+
 }
 
 
