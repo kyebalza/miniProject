@@ -116,12 +116,6 @@ public class PostService {
     public ResponseDto<?> deletePost(Long postId, Member member) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 글이 존재하지 않습니다."));
 
-//        if(!member.equals(post.getMember())){
-//        }
-//        if(!post.getImgUrl().equals("")){
-//            amazonS3Client.deleteObject(bucket, post.getImgUrl());
-//        }
-
         member.checkMember(post);
         if(!post.getMember().getEmail().equals(member.getEmail()))
             throw new IllegalArgumentException("작성자만 삭제할 수 있습니다.");
@@ -131,6 +125,17 @@ public class PostService {
         return ResponseDto.success("게시글이 삭제되었습니다");
     }
 
+    @Transactional
+    public ResponseDto<?> updatePost(Long postId, Member member, PostRequestDto postRequestDto){
+        //게시글 수정
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 글이 존재하지 않습니다."));
+
+        member.checkMember(post);
+
+        post.update(postRequestDto);
+        return ResponseDto.success(new PostResponseDto(post));
+
+    }
     //member에서 email받아오기
 //    public Member checkMember(Member member){
 //        Optional<Member> mem = memberRepository.findByEmail(member.getEmail());
@@ -139,16 +144,10 @@ public class PostService {
 //        return mem.get();
 //    }
 
-    //게시글 수정
-    @Transactional
-    public ResponseDto<?> updatePost(Long postId, Member member, PostRequestDto postRequestDto){
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 글이 존재하지 않습니다."));
-
-        member.checkMember(post);
-
-        post.update(postRequestDto);
-        return ResponseDto.success(new PostResponseDto(post));
-    }
-
+    //        if(!member.equals(post.getMember())){
+//        }
+//        if(!post.getImgUrl().equals("")){
+//            amazonS3Client.deleteObject(bucket, post.getImgUrl());
+//        }
 
 }
