@@ -41,4 +41,10 @@ public class Member extends Timestamped {
         this.email = memberRequestDto.getEmail();
         this.password = memberRequestDto.getPassword();
     }
+
+//    //작성자만 수정, 삭제할 수 있도록 확인
+    public void checkMember(Post post)  {
+        if (!this.getEmail().equals(post.getMember().getEmail())) {
+        };
+    }
 }
