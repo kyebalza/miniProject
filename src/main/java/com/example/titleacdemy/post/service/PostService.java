@@ -12,7 +12,9 @@ import com.example.titleacdemy.entity.Comment;
 import com.example.titleacdemy.entity.Member;
 import com.example.titleacdemy.entity.Post;
 import com.example.titleacdemy.S3.CommonUtils;
+import com.example.titleacdemy.likes.repository.LikesRepository;
 import com.example.titleacdemy.member.repository.MemberRepository;
+import com.example.titleacdemy.post.dto.AllPostResponseDto;
 import com.example.titleacdemy.post.dto.PostRequestDto;
 import com.example.titleacdemy.post.dto.PostResponseDto;
 import com.example.titleacdemy.post.repository.PostRepository;
@@ -46,6 +48,8 @@ public class PostService {
 
     private final CommentRepository commentRepository;
 
+    private final LikesRepository likesRepository;
+
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
@@ -78,7 +82,7 @@ public class PostService {
 
         postRepository.save(post);
 
-        return ResponseDto.success(new PostResponseDto(post));
+        return ResponseDto.success(new AllPostResponseDto(post));
     }
 
     //전체 게시글 조회
@@ -86,18 +90,19 @@ public class PostService {
     public ResponseDto<?> getPostAll(){
 
        List<Post> postList = postRepository.findAllByOrderByModifiedAtDesc();
-       List<PostResponseDto> postResponseDtoList = new ArrayList<>();
+       List<AllPostResponseDto> allPostResponseDtoList = new ArrayList<>();
        for(Post post : postList){
-           PostResponseDto postResponseDto = PostResponseDto.builder()
+           AllPostResponseDto allPostResponseDto = AllPostResponseDto.builder()
                    .Id(post.getId())
                    .title(post.getTitle())
                    .content(post.getContent())
                    .nickname(post.getMember().getNickname())
                    .imgUrl(post.getImgUrl())
+                   .createdAt(post.getCreatedAt())
                    .build();
-           postResponseDtoList.add(postResponseDto);
+           allPostResponseDtoList.add(allPostResponseDto);
        }
-       return ResponseDto.success(postResponseDtoList);
+       return ResponseDto.success(allPostResponseDtoList);
     }
 
 
@@ -107,6 +112,7 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow();
 
         List<Comment> commentList = commentRepository.findAllById(postId);
+        Long cntLike = likesRepository.countByPostId(postId);
         List<CommentResDto> commentResDtoList = new ArrayList<>();
 
         for (Comment comment : commentList){
@@ -127,7 +133,9 @@ public class PostService {
                         .nickname(post.getMember().getNickname())
                         .content(post.getContent())
                         .imgUrl(post.getImgUrl())
+                        .likeCnt(cntLike)
                         .commentResDtoList(commentResDtoList)
+                        .createdAt(post.getCreatedAt())
                         .build()
         );
     }
@@ -137,11 +145,7 @@ public class PostService {
     public ResponseDto<?> deletePost(Long postId, Member member) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 글이 존재하지 않습니다."));
 
-//        if(!member.equals(post.getMember())){
-//        }
-//        if(!post.getImgUrl().equals("")){
-//            amazonS3Client.deleteObject(bucket, post.getImgUrl());
-//        }
+
 
         member.checkMember(post);
         if(!post.getMember().getEmail().equals(member.getEmail()))
@@ -168,8 +172,9 @@ public class PostService {
         member.checkMember(post);
 
         post.update(postRequestDto);
-        return ResponseDto.success(new PostResponseDto(post));
+        return ResponseDto.success(new AllPostResponseDto(post));
     }
+
 
 
 }
