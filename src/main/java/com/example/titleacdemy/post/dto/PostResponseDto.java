@@ -1,5 +1,6 @@
 package com.example.titleacdemy.post.dto;
 
+import com.example.titleacdemy.Comment.dto.CommentResDto;
 import com.example.titleacdemy.entity.Post;
 import com.example.titleacdemy.entity.Timestamped;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -23,6 +25,8 @@ public class PostResponseDto {
     private String nickname;
     private String content;
     private String imgUrl;
+
+    private List<CommentResDto> commentResDtoList;
 
     private Long likeCnt;
 

@@ -42,8 +42,9 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    private final CommentRepository commentRepository;
+    private final MemberRepository memberRepository;
 
+    private final CommentRepository commentRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -113,6 +114,7 @@ public class PostService {
                     CommentResDto.builder()
                             .id(comment.getId())
                             .content(comment.getContent())
+                            .author(comment.getMember().getNickname())
                             .createdAt(comment.getCreatedAt())
                             .build()
             );
@@ -125,6 +127,7 @@ public class PostService {
                         .nickname(post.getMember().getNickname())
                         .content(post.getContent())
                         .imgUrl(post.getImgUrl())
+                        .commentResDtoList(commentResDtoList)
                         .build()
         );
     }
@@ -139,10 +142,8 @@ public class PostService {
 //        if(!post.getImgUrl().equals("")){
 //            amazonS3Client.deleteObject(bucket, post.getImgUrl());
 //        }
-        member.checkMember(post);
-        //댓글 지우기
-        commentRepository.deleteCommentsByPost(post);
 
+        member.checkMember(post);
         if(!post.getMember().getEmail().equals(member.getEmail()))
             throw new IllegalArgumentException("작성자만 삭제할 수 있습니다.");
 
