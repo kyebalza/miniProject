@@ -4,6 +4,7 @@ import com.example.titleacdemy.dto.ResponseDto;
 import com.example.titleacdemy.entity.Likes;
 import com.example.titleacdemy.entity.Member;
 import com.example.titleacdemy.entity.Post;
+import com.example.titleacdemy.likes.dto.likeRequestDto;
 import com.example.titleacdemy.likes.repository.LikesRepository;
 import com.example.titleacdemy.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,14 +31,14 @@ public class LikesService {
     }
 
     //좋아요
-    public ResponseDto<?> likeUp(Long postId, Long memberId) {
+    public ResponseDto<?> likeUp(likeRequestDto likeRequestDto, Long memberId) {
         //1. postId 와 userEmail로 좋아요 여부 판단하기
         //boolean likes = likesRepository.existsByPostIdAndMemberId(postId, memberId);
-        Optional<Likes> likes = likesRepository.findByPostIdAndMemberId(postId, memberId);
+        Optional<Likes> likes = likesRepository.findByPostIdAndMemberId(Long.parseLong(likeRequestDto.getPostId()), memberId);
         //Exists 메소드
         // id 만 가져오기
         Member member = getMember(memberId);
-        Post post = new Post(postId);
+        Post post = new Post(Long.parseLong(likeRequestDto.getPostId()));
         String likeResult;
         if (likes.isPresent()){
             //2-1. 있으면 삭제

@@ -1,6 +1,7 @@
 package com.example.titleacdemy.Comment.repository;
 
 import com.example.titleacdemy.entity.Comment;
+import com.example.titleacdemy.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,4 +14,5 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
     //@Modifying
     //    @Query("delete from Comment c where c.post.id = :postId")
     //    void deleteAllByPostId(@Param("postId")Long postId);
+    void deleteCommentsByPost(Post post);
 }
