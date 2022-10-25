@@ -13,6 +13,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 @Configuration  // 설정파일을 만들기 위한 어노테이션 or Bean을 등록하기 위한 어노테이션
 @EnableWebSecurity  // 스프링 Security 지원을 가능하게 함
@@ -33,6 +36,19 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
+        // CORS 설정
+        http.cors().configurationSource(request -> {
+            var cors = new CorsConfiguration();
+            cors.setAllowedOriginPatterns(List.of("*"));
+            cors.setAllowedMethods(List.of("*"));
+            cors.setAllowedHeaders(List.of("*"));
+            cors.addExposedHeader("AccessToken");
+            cors.addExposedHeader("RefreshToken");
+            cors.setAllowCredentials(true);
+            return cors;
+        });
+
+
         http.cors();
         http.csrf().disable();
 
@@ -42,7 +58,7 @@ public class WebSecurityConfig {
                 //.antMatchers("/api/auth/**").authenticated()//이 url로 요청이 들어오면 authenticated 해라
                 .authorizeRequests()
                 .antMatchers("/api/auth/**").permitAll()
-                .anyRequest().permitAll()
+                .anyRequest().permitAll()//permitAll() 대신 authenticated()
                 .and()
                 // 뒤에 필터보다 앞에 필터를 먼저 쓰겠다
                 .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
