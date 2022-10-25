@@ -24,6 +24,9 @@ public class PostResponseDto {
     private String content;
     private String imgUrl;
 
+    private Long likeCnt;
+
+
     public PostResponseDto(Post post){
         this.Id = post.getId();
         this.title = post.getTitle();

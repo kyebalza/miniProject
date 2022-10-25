@@ -3,12 +3,13 @@ cloud:
     region:
       static: ap-northeast-2
     s3:
-      bucket: jjw0611
+      bucket: myrpguswnsbucket
     credentials:
-      access-key: AKIA3WLTVYEZMKBZSKW3
-      secret-key: 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
+      access-key: AKIA2I65DNMXBKKHZC5C
+      secret-key: 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
     stack:
       auto: false
+
 
 server:
   port: 8080
@@ -18,7 +19,6 @@ spring:
   h2:
     console:
       enabled: true
-
 
 
   datasource:

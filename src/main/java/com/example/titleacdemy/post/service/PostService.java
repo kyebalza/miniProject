@@ -5,7 +5,10 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
+import com.example.titleacdemy.Comment.dto.CommentResDto;
+import com.example.titleacdemy.Comment.repository.CommentRepository;
 import com.example.titleacdemy.dto.ResponseDto;
+import com.example.titleacdemy.entity.Comment;
 import com.example.titleacdemy.entity.Member;
 import com.example.titleacdemy.entity.Post;
 import com.example.titleacdemy.S3.CommonUtils;
@@ -39,7 +42,8 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    private final MemberRepository memberRepository;
+    private final CommentRepository commentRepository;
+
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -101,17 +105,31 @@ public class PostService {
     public ResponseDto<?> getPostOne(Long postId){
         Post post = postRepository.findById(postId).orElseThrow();
 
-        PostResponseDto postResponseDto = PostResponseDto.builder()
-                .Id(post.getId())
-                .title(post.getTitle())
-                .nickname(post.getMember().getNickname())
-                .content(post.getContent())
-                .imgUrl(post.getImgUrl())
-                .build();
-        return ResponseDto.success(postResponseDto);
+        List<Comment> commentList = commentRepository.findAllById(postId);
+        List<CommentResDto> commentResDtoList = new ArrayList<>();
+
+        for (Comment comment : commentList){
+            commentResDtoList.add(
+                    CommentResDto.builder()
+                            .id(comment.getId())
+                            .content(comment.getContent())
+                            .createdAt(comment.getCreatedAt())
+                            .build()
+            );
+        }
+
+        return ResponseDto.success(
+                PostResponseDto.builder()
+                        .Id(post.getId())
+                        .title(post.getTitle())
+                        .nickname(post.getMember().getNickname())
+                        .content(post.getContent())
+                        .imgUrl(post.getImgUrl())
+                        .build()
+        );
     }
 
-    //게시글 삭제 //npe발생...
+    //게시글 삭제
     @Transactional
     public ResponseDto<?> deletePost(Long postId, Member member) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 글이 존재하지 않습니다."));
@@ -121,8 +139,10 @@ public class PostService {
 //        if(!post.getImgUrl().equals("")){
 //            amazonS3Client.deleteObject(bucket, post.getImgUrl());
 //        }
-
         member.checkMember(post);
+        //댓글 지우기
+        commentRepository.deleteCommentsByPost(post);
+
         if(!post.getMember().getEmail().equals(member.getEmail()))
             throw new IllegalArgumentException("작성자만 삭제할 수 있습니다.");
 
