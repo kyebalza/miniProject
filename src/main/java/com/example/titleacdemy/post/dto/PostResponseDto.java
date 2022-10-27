@@ -1,16 +1,12 @@
 package com.example.titleacdemy.post.dto;
 
-import com.example.titleacdemy.Comment.dto.CommentResDto;
+import com.example.titleacdemy.comment.dto.CommentResDto;
 import com.example.titleacdemy.entity.Post;
-import com.example.titleacdemy.entity.Timestamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,6 +23,8 @@ public class PostResponseDto {
     private String imgUrl;
 
     private List<CommentResDto> commentResDtoList;
+//    private List<LikeListResponseDto> likesList;
+    private Boolean likeCheck;
 
     private Long likeCnt;
 

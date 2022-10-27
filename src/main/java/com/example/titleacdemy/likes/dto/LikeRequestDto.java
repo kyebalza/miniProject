@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class likeRequestDto {
+public class LikeRequestDto {
 
     @NotBlank
     private String postId;

@@ -1,9 +1,8 @@
 package com.example.titleacdemy.likes.controller;
 
 import com.example.titleacdemy.dto.ResponseDto;
-import com.example.titleacdemy.likes.dto.likeRequestDto;
+import com.example.titleacdemy.likes.dto.LikeRequestDto;
 import com.example.titleacdemy.likes.service.LikesService;
-import com.example.titleacdemy.member.dto.MemberRequestDto;
 import com.example.titleacdemy.member.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,7 +23,7 @@ public class LikesController {
 //        return likesService.likeUp(postId, userDetailsImpl.getMember().getId());
 //    }
     @PostMapping("/post/like")
-    public ResponseDto<?> likeUp(@RequestBody @Valid likeRequestDto likeRequestDto,
+    public ResponseDto<?> likeUp(@RequestBody @Valid LikeRequestDto likeRequestDto,
                                  @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
         return likesService.likeUp(likeRequestDto, userDetailsImpl.getMember().getId());
     }

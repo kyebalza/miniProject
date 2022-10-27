@@ -1,8 +1,8 @@
-package com.example.titleacdemy.Comment.controller;
+package com.example.titleacdemy.comment.controller;
 
-import com.example.titleacdemy.Comment.dto.CommentReqDto;
-import com.example.titleacdemy.Comment.dto.CommentResDto;
-import com.example.titleacdemy.Comment.service.CommentService;
+import com.example.titleacdemy.comment.dto.CommentReqDto;
+import com.example.titleacdemy.comment.dto.CommentResDto;
+import com.example.titleacdemy.comment.service.CommentService;
 import com.example.titleacdemy.dto.ResponseDto;
 import com.example.titleacdemy.member.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +20,10 @@ public class CommentController {
     public ResponseDto<?> create(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
                                  @PathVariable("post_id") Long postId,
                                  @RequestBody CommentReqDto dto) {
-            commentService.create(userDetailsImpl.getMember().getId(),postId, dto);
-        return new ResponseDto<>(true, null, null);
+
+        return commentService.create(userDetailsImpl.getMember().getId(),postId, dto);
     }
+
     @GetMapping
     public ResponseDto<?> getAllByPostId(@PathVariable("post_id") Long postId){
         List<CommentResDto> resDtos = commentService.readAll(postId);
@@ -35,8 +36,8 @@ public class CommentController {
                                @PathVariable("comment_id") Long commentId,
                                @RequestBody CommentReqDto dto) {
 
-        commentService.update(userDetailsImpl,postId, commentId, dto);
-        return new ResponseDto<>(true, null,null);
+
+        return commentService.update(userDetailsImpl,postId, commentId, dto);
     }
 
     @DeleteMapping("/{comment_id}")
@@ -44,7 +45,7 @@ public class CommentController {
                                  @PathVariable("post_id") Long postId,
                                @PathVariable("comment_id") Long commentId){
 
-        commentService.delete(userDetailsImpl,postId, commentId);
-        return new ResponseDto<>(true, null,null);
+
+        return commentService.delete(userDetailsImpl,postId, commentId);
     }
     }

@@ -34,8 +34,9 @@ public class PostController {
 
     //상세 게시글 조회
     @GetMapping("/api/post/{postId}")
-    public ResponseDto<?> getPostOne(@PathVariable Long postId) {
-        return postService.getPostOne(postId);
+    public ResponseDto<?> getPostOne(@PathVariable Long postId,
+                                     @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        return postService.getPostOne(postId, userDetailsImpl.getMember().getId());
     }
 
     //게시글 삭제

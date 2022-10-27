@@ -5,10 +5,11 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
-import com.example.titleacdemy.Comment.dto.CommentResDto;
-import com.example.titleacdemy.Comment.repository.CommentRepository;
+import com.example.titleacdemy.comment.dto.CommentResDto;
+import com.example.titleacdemy.comment.repository.CommentRepository;
 import com.example.titleacdemy.dto.ResponseDto;
 import com.example.titleacdemy.entity.Comment;
+import com.example.titleacdemy.entity.Likes;
 import com.example.titleacdemy.entity.Member;
 import com.example.titleacdemy.entity.Post;
 import com.example.titleacdemy.S3.CommonUtils;
@@ -18,19 +19,15 @@ import com.example.titleacdemy.post.dto.AllPostResponseDto;
 import com.example.titleacdemy.post.dto.PostRequestDto;
 import com.example.titleacdemy.post.dto.PostResponseDto;
 import com.example.titleacdemy.post.repository.PostRepository;
-import io.jsonwebtoken.RequiredTypeException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -108,12 +105,23 @@ public class PostService {
 
     //상세 게시글 조회
     @Transactional(readOnly = true)
-    public ResponseDto<?> getPostOne(Long postId){
+    public ResponseDto<?> getPostOne(Long postId, Long memberId){
         Post post = postRepository.findById(postId).orElseThrow();
 
         List<Comment> commentList = commentRepository.findAllById(postId);
-        Long cntLike = likesRepository.countByPostId(postId);
         List<CommentResDto> commentResDtoList = new ArrayList<>();
+        Long cntLike = likesRepository.countByPostId(postId);
+        Optional<Likes> likes = likesRepository.findByPostIdAndMemberId(postId, memberId);
+        boolean likeCheck;
+        if (likes.isPresent()){
+            likeCheck = true;
+        }else {
+            likeCheck = false;
+        }
+//        List<Likes> likesList = likesRepository.findByPostId(postId);
+//        List<LikeListResponseDto> likeListResponseDtoList = new ArrayList<>();
+
+
 
         for (Comment comment : commentList){
             commentResDtoList.add(
@@ -125,6 +133,15 @@ public class PostService {
                             .build()
             );
         }
+//        for (Likes likes : likesList){
+//            likeListResponseDtoList.add(
+//                    LikeListResponseDto.builder()
+//                            .id(likes.getId())
+//                            .post_id(likes.getPost().getId())
+//                            .member_id(likes.getMember().getId())
+//                            .build()
+//            );
+//        }
 
         return ResponseDto.success(
                 PostResponseDto.builder()
@@ -135,6 +152,7 @@ public class PostService {
                         .imgUrl(post.getImgUrl())
                         .likeCnt(cntLike)
                         .commentResDtoList(commentResDtoList)
+                        .likeCheck(likeCheck)
                         .createdAt(post.getCreatedAt())
                         .build()
         );
@@ -146,6 +164,11 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 글이 존재하지 않습니다."));
 
 
+        //댓글 삭제
+        commentRepository.deleteCommentsByPost(post);
+
+        //게시글 좋아요 삭제
+        likesRepository.deleteLikesByPost(post);
 
         member.checkMember(post);
         if(!post.getMember().getEmail().equals(member.getEmail()))

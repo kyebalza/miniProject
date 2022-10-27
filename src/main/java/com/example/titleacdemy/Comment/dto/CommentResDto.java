@@ -1,4 +1,4 @@
-package com.example.titleacdemy.Comment.dto;
+package com.example.titleacdemy.comment.dto;
 
 import com.example.titleacdemy.entity.Comment;
 import lombok.AllArgsConstructor;

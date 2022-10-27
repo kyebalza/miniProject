@@ -1,4 +1,4 @@
-package com.example.titleacdemy.Comment.repository;
+package com.example.titleacdemy.comment.repository;
 
 import com.example.titleacdemy.entity.Comment;
 import com.example.titleacdemy.entity.Post;

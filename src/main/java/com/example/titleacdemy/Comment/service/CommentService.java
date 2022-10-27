@@ -1,8 +1,10 @@
-package com.example.titleacdemy.Comment.service;
+package com.example.titleacdemy.comment.service;
 
-import com.example.titleacdemy.Comment.dto.CommentReqDto;
-import com.example.titleacdemy.Comment.dto.CommentResDto;
-import com.example.titleacdemy.Comment.repository.CommentRepository;
+
+import com.example.titleacdemy.comment.dto.CommentReqDto;
+import com.example.titleacdemy.comment.dto.CommentResDto;
+import com.example.titleacdemy.comment.repository.CommentRepository;
+import com.example.titleacdemy.dto.ResponseDto;
 import com.example.titleacdemy.entity.Comment;
 import com.example.titleacdemy.entity.Member;
 import com.example.titleacdemy.entity.Post;
@@ -14,6 +16,7 @@ import org.apache.catalina.security.SecurityUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +29,7 @@ public class CommentService {
     private final PostRepository postRepository;
 
     @Transactional
-    public void create(Long memberId, Long postId, CommentReqDto dto){
+    public ResponseDto<?> create(Long memberId, Long postId, CommentReqDto dto){
 
         Member member = memberRepository.findById(memberId).orElseThrow(//repository에서 멤버 아이디를 준비합니다..orElseThrow로 해당아이디가 아니면 던져라
                 () -> new IllegalArgumentException("해당 아이디를 가진 멤버의 아이디가 없습니다.")
@@ -38,6 +41,23 @@ public class CommentService {
         Comment comment = dto.toEntity(member,post);
 
         commentRepository.save(comment);
+
+        List<Comment> commentList = commentRepository.findAllById(postId);
+        List<CommentResDto> commentResDtoList = new ArrayList<>();
+        for (Comment responseComment : commentList){
+            commentResDtoList.add(
+                    CommentResDto.builder()
+                            .id(responseComment.getId())
+                            .content(responseComment.getContent())
+                            .author(responseComment.getMember().getNickname())
+                            .createdAt(responseComment.getCreatedAt())
+                            .build()
+            );
+        }
+
+        return ResponseDto.success(
+                commentResDtoList
+        );
     }
     public List<CommentResDto> readAll(Long postId){
 
@@ -51,7 +71,7 @@ public class CommentService {
     }
     //댓글 수정
     @Transactional
-    public void update(UserDetailsImpl userDetailsImpl,Long postId, Long commentId, CommentReqDto dto){
+    public ResponseDto<?> update(UserDetailsImpl userDetailsImpl,Long postId, Long commentId, CommentReqDto dto){
 
         //1.데이터 베이스에 있는 기존 데이터를 가져온다
         Comment comment = commentRepository.findById(commentId).orElseThrow(
@@ -67,11 +87,28 @@ public class CommentService {
 
         //3.변경된 데이터를 데이터베이스에 저장합니다
         commentRepository.save(comment);
+
+        List<Comment> commentList = commentRepository.findAllById(postId);
+        List<CommentResDto> commentResDtoList = new ArrayList<>();
+        for (Comment responseComment : commentList){
+            commentResDtoList.add(
+                    CommentResDto.builder()
+                            .id(responseComment.getId())
+                            .content(responseComment.getContent())
+                            .author(responseComment.getMember().getNickname())
+                            .createdAt(responseComment.getCreatedAt())
+                            .build()
+            );
+        }
+
+        return ResponseDto.success(
+                commentResDtoList
+        );
     }
 
     //댓글 삭제
     @Transactional
-    public void delete(UserDetailsImpl userDetailsImpl,Long postId, Long commentId){
+    public ResponseDto<?> delete(UserDetailsImpl userDetailsImpl,Long postId, Long commentId){
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("해당 아이디를 가진 댓글이 존재하지 않습니다.")
@@ -82,6 +119,23 @@ public class CommentService {
         checkPostByPostId(comment, postId);
 
         commentRepository.deleteById(commentId);
+
+        List<Comment> commentList = commentRepository.findAllById(postId);
+        List<CommentResDto> commentResDtoList = new ArrayList<>();
+        for (Comment responseComment : commentList){
+            commentResDtoList.add(
+                    CommentResDto.builder()
+                            .id(responseComment.getId())
+                            .content(responseComment.getContent())
+                            .author(responseComment.getMember().getNickname())
+                            .createdAt(responseComment.getCreatedAt())
+                            .build()
+            );
+        }
+
+        return ResponseDto.success(
+                commentResDtoList
+        );
     }
 
     private void checkOwner(Comment comment, Long memberId){

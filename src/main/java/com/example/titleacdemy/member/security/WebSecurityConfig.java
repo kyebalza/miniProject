@@ -39,18 +39,18 @@ public class WebSecurityConfig {
         // CORS 설정
         http.cors().configurationSource(request -> {
             var cors = new CorsConfiguration();
-            cors.setAllowedOriginPatterns(List.of("*"));
+            cors.setAllowedOriginPatterns(List.of("*"));//배포할 떄 배포하는 url 설정
             cors.setAllowedMethods(List.of("*"));
             cors.setAllowedHeaders(List.of("*"));
-            cors.addExposedHeader("AccessToken");
-            cors.addExposedHeader("RefreshToken");
+            cors.addExposedHeader("Access_Token");
+            cors.addExposedHeader("Refresh_Token");
             cors.setAllowCredentials(true);
             return cors;
         });
 
 
-        http.cors();
         http.csrf().disable();
+
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
