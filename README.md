@@ -1,6 +1,8 @@
 # miniProject
 제목학원
 
+## API & 팀 노션
+https://www.notion.so/5-SA-94973c1774cf4462ab310684aa6cfd13?pvs=4
 
 # 트러블 슈팅
 
