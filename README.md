@@ -1,8 +1,28 @@
 # miniProject
 제목학원
+- 이미지에 맞는 재미있는 제목을 작성하여 공유하는 커뮤니티 입니다.
 
 ## API & 팀 노션
 https://www.notion.so/5-SA-94973c1774cf4462ab310684aa6cfd13?pvs=4
+
+## ERD
+![제목학원 (2)](https://user-images.githubusercontent.com/95573777/220406942-0fa478fd-ccd3-4f8f-a0df-144209ae1b9a.png)
+
+## 기술 스택
+### **Application**
+- JAVA 11
+- Spring Boot _2.7.0
+- Spring Security _0.11.2
+- JPA
+
+
+### **Data**
+- AWS S3
+- H2
+
+### **DevOps**
+- AWS EC2
+
 
 # 트러블 슈팅
 
